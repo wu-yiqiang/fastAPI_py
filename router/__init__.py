@@ -1,6 +1,6 @@
-from router import users
+from router import user
 
 # 定义路由列表
 routers = [
-    users,
+    user,
 ]
