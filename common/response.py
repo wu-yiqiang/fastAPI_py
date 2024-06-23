@@ -13,7 +13,7 @@ def response(data, code= 200, msg=None):
         'data': data,
         'msg': msg,
     }
-    if msg :
+    if msg:
         data['msg'] = msg
     else:
         data['msg'] = status[code]
