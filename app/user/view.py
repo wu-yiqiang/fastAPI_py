@@ -4,22 +4,22 @@ from common import response
 from app.user.serialize import Register
 
 # 实例化APIRouter实例
-router = APIRouter()
+userrouter = APIRouter()
 
 
 # 注册具体方法
-@router.get("/login")
+@userrouter.get("/login")
 async def login(username: Union[str, None] = Query(default=None, min_length=3, max_length=50),
                 password: Union[str, None] = Query(default=None, min_length=8, max_length=16)):
     return response.response(data={'detail': "重复"}, code=400)
 
 
-@router.post("/register", status_code=status.HTTP_200_OK)
+@userrouter.post("/register", status_code=status.HTTP_200_OK)
 async def register(user: Register):
     return response.response(data={'detail': "账号不能重复"}, code=500, msg="asdad")
 
 
-@router.post("/userInfo")
+@userrouter.post("/userInfo")
 async def userInfo():
     return {
         "code": 200,
@@ -27,7 +27,7 @@ async def userInfo():
     }
 
 
-@router.post("/changePassword")
+@userrouter.post("/changePassword")
 async def changePassword():
     return {
         "code": 200,
