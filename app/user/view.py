@@ -9,7 +9,7 @@ userrouter = APIRouter()
 
 # 注册具体方法
 @userrouter.get("/login")
-async def login(username: Union[str, None] = Query(default=None, min_length=3, max_length=50),
+async def login(email: Union[str, None] = Query(default=None, min_length=3, max_length=50),
                 password: Union[str, None] = Query(default=None, min_length=8, max_length=16)):
     return response.response(data={'detail': "重复"}, code=400)
 
