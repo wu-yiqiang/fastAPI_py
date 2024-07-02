@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, status
 from typing import Union
-from app.waste.serialize import Item
+from app.wasteType.serialize import Item
 from common import response
 
 # 实例化APIRouter实例
