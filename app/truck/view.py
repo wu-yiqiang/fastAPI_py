@@ -13,9 +13,15 @@ truckrouter = APIRouter()
 async def getTruckList(pageSize: int, pageNo: int, keyword: Optional[str]):
     offset_num = (pageNo - 1) * pageSize
     lists = await Truck.filter(is_deleted=0).all().offset(offset_num).limit(pageSize).values('displayName', 'contractors__companyName')
-    # for list in lists:
-    #     list.contractor =
-    return response_success(data=lists)
+    total = await Truck.filter(is_deleted=0).all().count()
+    pageNo = pageNo
+    pageSize = pageSize
+    data = dict()
+    data['total'] = total
+    data['pageNo'] = pageNo
+    data['pageSize'] = pageSize
+    data['lists'] = lists
+    return response_success(data=data)
 
 @truckrouter.post("/disposalTruck",status_code=status.HTTP_200_OK)
 async def postTruckItem(data: PostTruckIn):

@@ -18,7 +18,16 @@ contractorrouter = APIRouter()
 async def getContractorList(pageSize: int, pageNo: int, keyword: Optional[str], type: int):
     offset_num = (pageNo - 1) * pageSize
     list = await Contractor.filter(type=type, is_deleted=0).all().offset(offset_num).limit(pageSize)
-    return response_success(data=list)
+    total = await Contractor.filter(type=type, is_deleted=0).all().count()
+    pageNo = pageNo
+    pageSize = pageSize
+    data = dict()
+    data['total'] = total
+    data['pageNo'] = pageNo
+    data['pageSize'] = pageSize
+    data['lists'] = list
+
+    return response_success(data=data)
 
 # 全量查询
 @contractorrouter.get("/company",status_code=status.HTTP_200_OK)
