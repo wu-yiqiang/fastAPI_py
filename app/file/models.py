@@ -3,9 +3,12 @@ from tortoise.models import Model
 
 from app.common.db import BaseModel
 
-class Truck(BaseModel):
-    displayName = fields.CharField(max_length=255, unique=True)
-    contractors = fields.ForeignKeyField(model_name='app.Contractor', related_name='trucks')
+class File(BaseModel):
+    fileHash = fields.CharField(max_length=255, unique=True)
+    filename = fields.CharField(max_length=255, unique=True)
+    size = fields.IntField() # 单位为byte
+    type = fields.CharField(max_length=255)
+    addr = fields.CharField(max_length=65535)
 
     class Meta:
-        table = 'truck'
+        table = 'file'
