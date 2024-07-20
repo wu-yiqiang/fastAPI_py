@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, status
 from typing import Union, Optional
-from app.common.response import response_success
+from app.common.response import common_response
 # from app.file.serialize import PostTruckIn
 # 实例化APIRouter实例
 filerouter = APIRouter()
@@ -19,4 +19,4 @@ async def uploadFile(filename: str):
     # data['pageNo'] = pageNo
     # data['pageSize'] = pageSize
     # data['lists'] = lists
-    return response_success(data=[])
+    return common_response(200,data=[])

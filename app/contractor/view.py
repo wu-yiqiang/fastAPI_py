@@ -4,7 +4,7 @@ import jinja2
 from fastapi import APIRouter, Query, status
 from typing import Union,Optional
 from app.wasteType.serialize import Item
-from app.common.response import response_success
+from app.common.response import common_response
 from app.common.serialize import QueryPageRequest
 from app.contractor.serialize import PostContractorIn
 from app.contractor.models import Contractor
@@ -27,19 +27,19 @@ async def getContractorList(pageSize: int, pageNo: int, keyword: Optional[str], 
     data['pageSize'] = pageSize
     data['lists'] = list
 
-    return response_success(data=data)
+    return common_response(200, data=data)
 
 # 全量查询
 @contractorrouter.get("/company",status_code=status.HTTP_200_OK)
 async def getContractorAllList():
     list = await Contractor.filter(is_deleted=0).all()
-    return response_success(data=list)
+    return common_response(200,data=list)
 
 # 新增数据
 @contractorrouter.post("/company",status_code=status.HTTP_200_OK)
 async def postContractorItem(data: PostContractorIn):
     await Contractor(companyName= data.companyName, email= data.email, type=data.type).save()
-    return response_success(data=None)
+    return common_response(200,data=None)
 
 
 
@@ -47,18 +47,18 @@ async def postContractorItem(data: PostContractorIn):
 @contractorrouter.get("/company/uuid/{uuid}",status_code=status.HTTP_200_OK)
 async def getContractorDetail(uuid: str):
     item = await Contractor.filter(uuid=uuid,is_deleted=0).first()
-    return response_success(data=item)
+    return common_response(200,data=item)
 
 # 修改数据
 @contractorrouter.put("/company/uuid/{uuid}",status_code=status.HTTP_200_OK)
 async def postContractor(uuid,data: PostContractorIn):
     await Contractor.filter(uuid=uuid, is_deleted = 0).update(companyName=data.companyName, email=data.email, type=data.type)
-    return response_success(data=None)
+    return common_response(200,data=None)
 
 
 # 删除数据
 @contractorrouter.delete("/company/uuid/{uuid}",status_code=status.HTTP_200_OK)
 async def deleteContractor(uuid):
     await Contractor.filter(uuid=uuid).update(is_deleted=1)
-    return response_success(data=None)
+    return common_response(200,data=None)
 

@@ -1,30 +1,35 @@
 from fastapi import APIRouter, Query, status
 from typing import Union
 from common import response
-from app.user.serialize import Register
-
+from app.user.serialize import UserForm
+from app.user.models import Users
+from app.common.response import common_response
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
 
 # 注册具体方法
-@userrouter.get("/login")
-async def login(email: Union[str, None] = Query(default=None, min_length=3, max_length=50),
-                password: Union[str, None] = Query(default=None, min_length=8, max_length=16)):
-    return response.response(data={'detail': "重复"}, code=400)
+@userrouter.post("/login")
+async def login(login: UserForm):
+    user = await Users.filter(is_deleted = 0, email = login.email, password = login.password).first().values('id', 'email', 'uuid','updated_at','created_at', 'roles__id', 'menus__id', 'buttons__id', 'routers__id')
+    if user is None:
+        return common_response(10000000)
+    # 生成token 设置token
+    return common_response(200, user)
 
 
 @userrouter.post("/register", status_code=status.HTTP_200_OK)
-async def register(user: Register):
-    return response.response(data={'detail': "账号不能重复"}, code=500, msg="asdad")
+async def register(register: UserForm):
+    await Users(email=register.email, password=register.password, is_deleted= 0).save()
+    return common_response(200)
 
 
 @userrouter.post("/userInfo")
-async def userInfo():
-    return {
-        "code": 200,
-        "msg": "Hello World!"
-    }
+async def userInfo(userform: UserForm):
+    user = await Users.filter(is_deleted=0, email=userform.email, password=userform.password).first().values('id', 'email','uuid','updated_at','created_at','roles__id','menus__id','buttons__id','routers__id')
+    if user is None:
+        return common_response(10000000)
+    return common_response(200, user)
 
 
 @userrouter.post("/changePassword")

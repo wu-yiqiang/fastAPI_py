@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, status
 from typing import Union, Optional
 from app.truck.models import Truck
 from app.contractor.models import Contractor
-from app.common.response import response_success
+from app.common.response import common_response
 from app.common.serialize import QueryPageRequest
 from app.truck.serialize import PostTruckIn
 # 实例化APIRouter实例
@@ -21,9 +21,9 @@ async def getTruckList(pageSize: int, pageNo: int, keyword: Optional[str]):
     data['pageNo'] = pageNo
     data['pageSize'] = pageSize
     data['lists'] = lists
-    return response_success(data=data)
+    return common_response(200,data=data)
 
 @truckrouter.post("/disposalTruck",status_code=status.HTTP_200_OK)
 async def postTruckItem(data: PostTruckIn):
     await Truck(displayName=data.displayName, contractors_id=data.contractorsId).save()
-    return response_success(data=None)
+    return common_response(200,data=None)

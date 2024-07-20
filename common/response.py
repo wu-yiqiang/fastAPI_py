@@ -1,9 +1,10 @@
 from fastapi.encoders import jsonable_encoder
 status = {
-    200: '',
+    200: '操作成功',
     300: '重定向',
     400: '业务错误',
     500: '服务错误',
+    10000000: '密码错误'
 }
 
 def response(data, code= 200, msg=None):
