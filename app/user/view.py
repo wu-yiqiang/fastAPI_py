@@ -4,6 +4,7 @@ from common import response
 from app.user.serialize import UserForm
 from app.user.models import Users
 from app.common.response import common_response
+from utils.encrypt import encryptStr, decryptStr,keyValue
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
@@ -20,7 +21,9 @@ async def login(login: UserForm):
 
 @userrouter.post("/register", status_code=status.HTTP_200_OK)
 async def register(register: UserForm):
-    await Users(email=register.email, password=register.password, is_deleted= 0).save()
+    password = decryptStr(register.email, register.password)
+    newPassword = encryptStr(keyValue, password)
+    await Users(email=register.email, password=newPassword, is_deleted= 0).save()
     return common_response(200)
 
 
