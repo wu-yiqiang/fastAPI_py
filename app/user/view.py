@@ -6,7 +6,7 @@ from app.common.response import common_response
 from utils.encrypt import encryptStr, decryptStr,keyValue
 from aioredis import Redis
 from db.redis import sys_cache
-from utils.jwt import create_access_token
+from utils.jwt import create_access_token, get_current_user
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
@@ -50,8 +50,6 @@ async def userInfo(userform: UserForm):
 
 
 @userrouter.post("/changePassword")
-async def changePassword():
-    return {
-        "code": 200,
-        "msg": "Hello World!"
-    }
+async def changePassword(user: Users = Depends(get_current_user)):
+    print("口萨达s萨是谁", user)
+    return common_response(200)
