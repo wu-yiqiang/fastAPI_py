@@ -7,7 +7,9 @@ from aioredis import Redis
 from db.redis import sys_cache
 from common.response import response
 from fastapi import Depends, FastAPI, HTTPException, status
-from jwt.exceptions import InvalidTokenError
+# from jwt.exceptions import InvalidTokenError
+# from jose import jwt
+# from jose.exceptions import ExpiredSignatureError,JWEError
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/itf/lms/web/login",
@@ -42,19 +44,41 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), cache: Redis = Depends(sys_cache)):
-    credentials_exception = response(10000001)
-    print('sa是否是', token)
-    try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        username = cache.get(email)
-        if username is None:
-            raise credentials_exception
-    except InvalidTokenError:
-        raise credentials_exception
-    user = Users.filter(email= email, is_deleted=False).first()
-    if user is None:
-        raise credentials_exception
-    return user
-
+# def judgeToken(token):
+#     """
+#     判断token
+#     :param token: token串
+#     :return: boolen
+#     """
+#     try:
+#         payload = jwt.decode(token, JWT_SECRET_KEY)
+#         # todo check 解密串 ，可以自己写，一般是去查询数据库
+#         print("解密串")
+#         if payload["username"] == 'chacha' and payload["password"] == '12323':
+#             print(payload)
+#             return True
+#         else:
+#             print("token 身份错误")
+#             return False
+#     except ExpiredSignatureError as e:
+#         print("token 过期了,{}".format(str(e)))
+#         return False
+#     except JWEError as e:
+#         print("token 验证失败,{}".format(str(e)))
+#         return False
+#
+# def login_required(token=Depends(oauth2_scheme)):
+#     """
+#     登录认证token
+#     :param token:
+#     :return:boolen
+#     """
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_411_LENGTH_REQUIRED,
+#         detail="Authenticate fail！",
+#         headers={"WWW-Authenticate": "Bearer"}
+#     )
+#     if judgeToken(token):
+#         return True
+#     else:
+#         raise credentials_exception

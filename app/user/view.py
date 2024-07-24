@@ -6,7 +6,7 @@ from app.common.response import common_response
 from utils.encrypt import encryptStr, decryptStr,keyValue
 from aioredis import Redis
 from db.redis import sys_cache
-from utils.jwt import create_access_token, get_current_user
+from utils.jwt import create_access_token
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
@@ -21,7 +21,6 @@ async def login(login: UserForm, cache: Redis = Depends(sys_cache)):
         return common_response(10000000)
      # 查询token是否存在
     token = await cache.get(name=login.email)
-    data = dict()
     data = user
     if token is None:
         # 生成token 设置token
@@ -50,6 +49,6 @@ async def userInfo(userform: UserForm):
 
 
 @userrouter.post("/changePassword")
-async def changePassword(user: Users = Depends(get_current_user)):
-    print("口萨达s萨是谁", user)
-    return common_response(200)
+async def changePassword():
+    print("口萨达s萨是谁")
+    return common_response(200);
