@@ -10,7 +10,9 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
     `updated_at` DATETIME(6) NOT NULL  DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     `is_deleted` BOOL NOT NULL  DEFAULT 0,
     `email` VARCHAR(255) NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL
+    `name` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `picture` LONGTEXT NOT NULL
 ) CHARACTER SET utf8mb4;
 CREATE TABLE IF NOT EXISTS `aerich` (
     `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -81,12 +83,12 @@ CREATE TABLE IF NOT EXISTS `buttons` (
     `is_deleted` BOOL NOT NULL  DEFAULT 0,
     `button_name` VARCHAR(255) NOT NULL UNIQUE
 ) CHARACTER SET utf8mb4;
-CREATE TABLE IF NOT EXISTS `users_routers` (
+CREATE TABLE IF NOT EXISTS `users_buttons` (
     `users_id` INT NOT NULL,
-    `routers_id` INT NOT NULL,
+    `buttons_id` INT NOT NULL,
     FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`routers_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `uidx_users_route_users_i_2f03ae` (`users_id`, `routers_id`)
+    FOREIGN KEY (`buttons_id`) REFERENCES `buttons` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uidx_users_butto_users_i_ad7546` (`users_id`, `buttons_id`)
 ) CHARACTER SET utf8mb4;
 CREATE TABLE IF NOT EXISTS `users_roles` (
     `users_id` INT NOT NULL,
@@ -102,12 +104,12 @@ CREATE TABLE IF NOT EXISTS `users_menus` (
     FOREIGN KEY (`menus_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
     UNIQUE KEY `uidx_users_menus_users_i_075d5e` (`users_id`, `menus_id`)
 ) CHARACTER SET utf8mb4;
-CREATE TABLE IF NOT EXISTS `users_buttons` (
+CREATE TABLE IF NOT EXISTS `users_routers` (
     `users_id` INT NOT NULL,
-    `buttons_id` INT NOT NULL,
+    `routers_id` INT NOT NULL,
     FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`buttons_id`) REFERENCES `buttons` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `uidx_users_butto_users_i_ad7546` (`users_id`, `buttons_id`)
+    FOREIGN KEY (`routers_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uidx_users_route_users_i_2f03ae` (`users_id`, `routers_id`)
 ) CHARACTER SET utf8mb4;"""
 
 

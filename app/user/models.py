@@ -5,7 +5,9 @@ from app.common.db import BaseModel
 
 class Users(BaseModel):
     email = fields.CharField(max_length=255, unique=True)
+    name = fields.CharField(max_length=255)
     password = fields.CharField(max_length=255)
+    picture = fields.TextField(max_length=255)
     roles = fields.ManyToManyField(model_name='app.Roles', related_name='user_role')
     menus = fields.ManyToManyField(model_name='app.Menus', related_name='user_menu')
     buttons = fields.ManyToManyField(model_name='app.Buttons', related_name='user_button')

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, status,Depends
+from typing import Union, Optional
 from typing import Union
-from app.user.serialize import UserForm
+from app.user.serialize import UserForm, PostUserIn
 from app.user.models import Users
 from app.common.response import common_response
 from utils.encrypt import encryptStr, decryptStr,keyValue
@@ -10,6 +11,27 @@ from utils.jwt import create_access_token
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
+
+
+@userrouter.get("/users/page",status_code=status.HTTP_200_OK)
+async def getUserList(pageSize: int, pageNo: int, keyword: Optional[str]):
+    offset_num = (pageNo - 1) * pageSize
+    list = await Users.filter(type=type, is_deleted=0).all().offset(offset_num).limit(pageSize)
+    total = await Users.filter(type=type, is_deleted=0).all().count()
+    pageNo = pageNo
+    pageSize = pageSize
+    data = dict()
+    data['total'] = total
+    data['pageNo'] = pageNo
+    data['pageSize'] = pageSize
+    data['lists'] = list
+    return common_response(200, data=data)
+
+@userrouter.post("/user",status_code=status.HTTP_200_OK)
+async def postUserItem(data: PostUserIn):
+    password = decryptStr(data.email, data.password)
+    await Users(name=data.name, email=data.email, password=password, picture=data.picture).save()
+    return common_response(200, data=data)
 
 # 注册具体方法
 @userrouter.post("/login")

@@ -31,5 +31,6 @@ def decryptStr(key: str, text: str):
     aes = AES.new(bytes(add_to_16(key), encoding='utf-8'), AES.MODE_ECB)
     #优先逆向解密base64成bytes
     base64_decrypted = base64.decodebytes(text.encode(encoding='utf-8'))
-    decrypted_text = str(aes.decrypt(base64_decrypted),encoding='utf-8')
+    print("aes", aes.decrypt(base64_decrypted))
+    decrypted_text = str(aes.decrypt(base64_decrypted), encoding='utf-8')
     return decrypted_text.strip()
