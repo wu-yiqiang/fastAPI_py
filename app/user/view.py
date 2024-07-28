@@ -30,6 +30,7 @@ async def getUserList(pageSize: int, pageNo: int, keyword: Optional[str]):
 @userrouter.post("/user",status_code=status.HTTP_200_OK)
 async def postUserItem(data: PostUserIn):
     password = decryptStr(data.email, data.password)
+    print("pass", password)
     await Users(name=data.name, email=data.email, password=password, picture=data.picture).save()
     return common_response(200, data=data)
 
