@@ -12,7 +12,7 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `name` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `picture` LONGTEXT NOT NULL
+    `pictures` LONGTEXT NOT NULL
 ) CHARACTER SET utf8mb4;
 CREATE TABLE IF NOT EXISTS `aerich` (
     `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,

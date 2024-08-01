@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Query, status,Depends
+from fastapi import APIRouter, Query, status,Depends, File, UploadFile,Form
 from typing import Union, Optional
-from typing import Union
 from app.user.serialize import UserForm, PostUserIn
 from app.user.models import Users
 from app.common.response import common_response
@@ -8,6 +7,10 @@ from utils.encrypt import encryptStr, decryptStr,keyValue
 from aioredis import Redis
 from db.redis import sys_cache
 from utils.jwt import create_access_token
+from common.const import facedata_path, picture_path
+from utils.FaceRecognition import getImageAndLabels
+from utils.network import  getIp
+import base64
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
@@ -27,12 +30,19 @@ async def getUserList(pageSize: int, pageNo: int, keyword: Optional[str]):
     data['lists'] = list
     return common_response(200, data=data)
 
+# 修改用户信息
 @userrouter.post("/user",status_code=status.HTTP_200_OK)
-async def postUserItem(data: PostUserIn):
-    password = decryptStr(data.email, data.password)
-    print("pass", password)
-    await Users(name=data.name, email=data.email, password=password, picture=data.picture).save()
-    return common_response(200, data=data)
+async def postUserItem( email: str = 'sutter.wu@itforce-tech.com',
+    password: str = 'DSq10PttORQFdMRVdrN+5Q==',
+    name: str = 'sutter',file: bytes = File(...)):
+    # password = decryptStr(data.email, data.password)
+    picture_name = picture_path()+name+".jpg"
+    with open(picture_name, "wb") as f:
+        f.write(file)
+
+    # await Users(name=name, email=email, password=password).save()
+    getImageAndLabels(picture_name, name)
+    return common_response(200, data=[])
 
 # 注册具体方法
 @userrouter.post("/login")
