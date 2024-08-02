@@ -53,19 +53,25 @@ def getImageAndLabels(path: str, label: str):
 # names = []
 
 #准备识别的图片
-def face_detect(img, name):
-    recogizer = cv2.face.LBPHFaceRecognizer.create()
-    recogizer.read(facedata_path()+name+'.yml')
-    gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)#转换为灰度
-    face_detector= cv2.Cascadeclassifier(classifiers_path())
-    face=face_detector.detectMultiScale(gray, 1.1, 5, cv2.CASCADE_SCALE_IMAGE, (100, 100), (300, 300))
-    for x,y, w, h in face:
-        ids, confidence = recogizer.predict(gray[y: y+h, x: x+w])
-        # print('标签id:',ids,'置信评分：'，confidence)
-        if confidence > 80:
-            return False
-        else:
-            return True
+def face_detect(img):
+    files = os.listdir(facedata_path())
+    for file in files:
+        file_path = os.path.join(facedata_path(), file)
+        if os.path.isfile(file_path):
+            recogizer = cv2.face.LBPHFaceRecognizer.create()
+            print("file阿松大", file_path, img)
+            recogizer.read(file_path)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            # 转换为灰度
+            face_detector = cv2.CascadeClassifier(classifiers_path())
+            face = face_detector.detectMultiScale(gray, 1.1, 5, cv2.CASCADE_SCALE_IMAGE, (100, 100), (300, 300))
+            for x,y, w, h in face:
+                ids, confidence = recogizer.predict(gray[y: y+h, x: x+w])
+                # print('标签id:',ids,'置信评分：'，confidence)
+                if confidence < 80:
+                    return file.join('.')[0], True
+
+    return False
 
 
 

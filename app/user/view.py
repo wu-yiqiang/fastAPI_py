@@ -1,3 +1,4 @@
+import random
 from fastapi import APIRouter, Query, status,Depends, File, UploadFile,Form
 from typing import Union, Optional
 from app.user.serialize import UserForm, PostUserIn
@@ -7,10 +8,8 @@ from utils.encrypt import encryptStr, decryptStr,keyValue
 from aioredis import Redis
 from db.redis import sys_cache
 from utils.jwt import create_access_token
-from common.const import facedata_path, picture_path
-from utils.FaceRecognition import getImageAndLabels
-from utils.network import  getIp
-import base64
+from common.const import facedata_path, picture_path, temps_path
+from utils.FaceRecognition import getImageAndLabels, face_detect
 # 实例化APIRouter实例
 userrouter = APIRouter()
 
@@ -35,13 +34,23 @@ async def getUserList(pageSize: int, pageNo: int, keyword: Optional[str]):
 async def postUserItem( email: str = 'sutter.wu@itforce-tech.com',
     password: str = 'DSq10PttORQFdMRVdrN+5Q==',
     name: str = 'sutter',file: bytes = File(...)):
-    # password = decryptStr(data.email, data.password)
+    password = decryptStr(email, password)
     picture_name = picture_path()+name+".jpg"
     with open(picture_name, "wb") as f:
         f.write(file)
 
-    # await Users(name=name, email=email, password=password).save()
+    await Users(name=name, email=email, password=password).save()
     getImageAndLabels(picture_name, name)
+    return common_response(200, data=[])
+
+
+@userrouter.post("/face-recognize",status_code=status.HTTP_200_OK)
+async def postUserItem(file: bytes = File(...)):
+    picture_name = temps_path()+str(random.random())+".jpg"
+    with open(picture_name, "wb") as f:
+        f.write(file)
+    name , isExist = face_detect(picture_name)
+    print('name', name, isExist)
     return common_response(200, data=[])
 
 # 注册具体方法
