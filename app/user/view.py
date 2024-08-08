@@ -38,7 +38,6 @@ async def postUserItem( email: str = 'sutter.wu@itforce-tech.com',
     picture_name = picture_path()+name+".jpg"
     with open(picture_name, "wb") as f:
         f.write(file)
-
     await Users(name=name, email=email, password=password).save()
     getImageAndLabels(picture_name, name)
     return common_response(200, data=[])
